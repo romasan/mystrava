@@ -1,9 +1,57 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>my strava</title>
-    </head>
-    <body>
-        <div id="root">=)</div>
-        <script src="../src/index.js" type="module"></script>
-    </body>
+<head>
+    <title>My bike tracks viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script type="module" src="./src/index.js" type="text/javascript"></script>
+	<style>
+        html, body, .map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        } 
+        .bar {
+            position: absolute;
+	    z-index: 1;
+	    border-radius: 3px;
+	    background: #ffffff;
+	    padding: 4px 5px;
+	    margin: 10px;
+	    font-family: Arial;
+	    font-size: 11pt;
+	    box-shadow: 0 1px 2px 1px rgba(0,0,0,.15), 0 2px 5px -3px rgba(0,0,0,.15);
+	    max-width: 50%;
+        }
+        .upload input {
+            display: none;
+        }
+        .upload label {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="bar">
+        <a href="./">&#8634;</a>
+        <select id="types">
+            <option>Загрузка...</option>
+        </select>
+        <select id="years">
+            <option selected>Год</option>
+        </select>
+        <input type="checkbox" id="showLabels" checked/>
+        <label for="showLabels">Описание</label>
+        <span class="upload">
+            <input id="upload" type="file"/>
+            <label for="upload">
+                Загрузить GPX
+            </label>
+        </span>
+    </div>
+    <div class="map" id="ymap"></div>
+</body>
 </html>

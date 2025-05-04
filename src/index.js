@@ -67,24 +67,24 @@ if (search.code) {
 
   const main = async () => {
 
-    /*
-    curl -X POST https://www.strava.com/api/v3/oauth/token \
-    -d client_id=ReplaceWithClientID \
-    -d client_secret=ReplaceWithClientSecret \
-    -d code=ReplaceWithCode \
-    -d grant_type=authorization_code
-    */
+    const data = {
+      client_id,
+      client_secret,
+      code: search.code,
+      grant_type: 'authorization_code'
+    };
 
-    const urlEncoded = new URLSearchParams();
+    // const urlEncoded = new URLSearchParams();
 
-    urlEncoded.append('client_id', client_id);
-    urlEncoded.append('client_secret', client_secret);
-    urlEncoded.append('code', search.code);
-    urlEncoded.append('grant_type', 'authorization_code');
+    // urlEncoded.append('client_id', client_id);
+    // urlEncoded.append('client_secret', client_secret);
+    // urlEncoded.append('code', search.code);
+    // urlEncoded.append('grant_type', 'authorization_code');
 
     const tokenResp = await fetch('https://www.strava.com/api/v3/oauth/token', {
       method: 'POST',
-      body: urlEncoded,
+      body: new URLSearchParams(data),
+      // body: urlEncoded,
       // body: JSON.stringify({
       //     client_id,
       //     client_secret,
@@ -263,7 +263,8 @@ if (search.code) {
     client_id,
     redirect_uri: location.href.split('?')[0],
     response_type: 'code',
-    scope: 'read,activity:read_all,profile:read_all,read_all'
+    // scope: 'read,activity:read_all,profile:read_all,read_all',
+    scope: 'activity:read_all',
   }]
     .reduce((x, o) => (Object.entries(o)), 0)
     .map(([k, e]) => k + '=' + e)

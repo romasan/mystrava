@@ -3,6 +3,7 @@ import polyline from './polyline.js';
 import { Ymap, collection, createLine } from './ymaps.js';
 import './upload.js';
 import { getGradient } from './colors.js';
+// import 'select-pure'; // https://www.webcomponents.org/element/select-pure
 
 const en_ru = {
   'All': 'Все',
@@ -66,20 +67,38 @@ if (search.code) {
 
   const main = async () => {
 
-    const tokenResp = await fetch(
-      'https://www.strava.com/oauth/token?' + [{
-        client_id,
-        client_secret,
-        code: search.code,
-        grant_type: 'authorization_code'
-      }]
-        .reduce((x, o) => (Object.entries(o)), 0)
-        .map(([k, e]) => k + '=' + e)
-        .join('&'),
-      {
-        method: 'POST'
-      }
-    )
+    /*
+    curl -X POST https://www.strava.com/api/v3/oauth/token \
+    -d client_id=ReplaceWithClientID \
+    -d client_secret=ReplaceWithClientSecret \
+    -d code=ReplaceWithCode \
+    -d grant_type=authorization_code
+    */
+
+    const tokenResp = await fetch('https://www.strava.com/api/v3/oauth/token', {
+      method: 'POST',
+      body: JSON.stringify({
+          client_id,
+          client_secret,
+          code: search.code,
+          grant_type: 'authorization_code'
+      })
+    });
+
+    // const tokenResp = await fetch(
+    //   'https://www.strava.com/oauth/token?' + [{
+    //     client_id,
+    //     client_secret,
+    //     code: search.code,
+    //     grant_type: 'authorization_code'
+    //   }]
+    //     .reduce((x, o) => (Object.entries(o)), 0)
+    //     .map(([k, e]) => k + '=' + e)
+    //     .join('&'),
+    //   {
+    //     method: 'POST'
+    //   }
+    // )
     const tokenJSON = await tokenResp.json()
     const token = tokenJSON.access_token
     
@@ -177,6 +196,7 @@ if (search.code) {
 
       years.forEach(e => {
         const option = document.createElement('option');
+        // const option = document.createElement('option-pure');
         option.value = e;
         const countOnYear = ~~list.reduce((c, x) => c + (x.year == e ? x.dist : 0), 0);
         const countOfYear = ~~list.reduce((c, x) => c + (x.year == e ? 1 : 0), 0);
@@ -186,11 +206,17 @@ if (search.code) {
     }
     updateYearsList();
 
-    yearsList.addEventListener('change', e => {
-      year = e.target.value;
-      filterCollection({ collection, list, type, year });
-      Ymap.setBounds(collection.getBounds());
-    });
+    try {
+      yearsList.addEventListener('change', e => {
+        year = e.target.value;
+        filterCollection({ collection, list, type, year });
+        Ymap.setBounds(collection.getBounds());
+      });
+    } catch (error) {
+      console.log('==== Error', error);
+    }
+
+    console.log('====', yearsList);
 
     // ---
 
@@ -222,7 +248,7 @@ if (search.code) {
 
   main()
 } else {
-  location.href = 'https://www.strava.com/oauth/authorize?' + [{
+  const link = 'https://www.strava.com/oauth/authorize?' + [{
     client_id,
     redirect_uri: location.href.split('?')[0],
     response_type: 'code',
@@ -230,5 +256,7 @@ if (search.code) {
   }]
     .reduce((x, o) => (Object.entries(o)), 0)
     .map(([k, e]) => k + '=' + e)
-    .join('&')
+    .join('&');
+  alert(link);
+  location.href = link;
 }

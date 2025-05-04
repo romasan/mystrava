@@ -75,14 +75,22 @@ if (search.code) {
     -d grant_type=authorization_code
     */
 
+    const urlEncoded = new URLSearchParams();
+
+    urlEncoded.append('client_id', client_id);
+    urlEncoded.append('client_secret', client_secret);
+    urlEncoded.append('code', search.code);
+    urlEncoded.append('grant_type', 'authorization_code');
+
     const tokenResp = await fetch('https://www.strava.com/api/v3/oauth/token', {
       method: 'POST',
-      body: JSON.stringify({
-          client_id,
-          client_secret,
-          code: search.code,
-          grant_type: 'authorization_code'
-      })
+      body: urlEncoded,
+      // body: JSON.stringify({
+      //     client_id,
+      //     client_secret,
+      //     code: search.code,
+      //     grant_type: 'authorization_code'
+      // })
     });
 
     // const tokenResp = await fetch(
@@ -99,7 +107,10 @@ if (search.code) {
     //     method: 'POST'
     //   }
     // )
-    const tokenJSON = await tokenResp.json()
+    const tokenJSON = await tokenResp.json();
+
+    console.log('==== tokenJSON', tokenJSON);
+
     const token = tokenJSON.access_token
     
     let resp = await get('https://www.strava.com/api/v3/athlete/activities?per_page=200', token)

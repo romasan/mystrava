@@ -74,39 +74,11 @@ if (search.code) {
       grant_type: 'authorization_code'
     };
 
-    // const urlEncoded = new URLSearchParams();
-
-    // urlEncoded.append('client_id', client_id);
-    // urlEncoded.append('client_secret', client_secret);
-    // urlEncoded.append('code', search.code);
-    // urlEncoded.append('grant_type', 'authorization_code');
-
     const tokenResp = await fetch('https://www.strava.com/api/v3/oauth/token', {
       method: 'POST',
       body: new URLSearchParams(data),
-      // body: urlEncoded,
-      // body: JSON.stringify({
-      //     client_id,
-      //     client_secret,
-      //     code: search.code,
-      //     grant_type: 'authorization_code'
-      // })
     });
 
-    // const tokenResp = await fetch(
-    //   'https://www.strava.com/oauth/token?' + [{
-    //     client_id,
-    //     client_secret,
-    //     code: search.code,
-    //     grant_type: 'authorization_code'
-    //   }]
-    //     .reduce((x, o) => (Object.entries(o)), 0)
-    //     .map(([k, e]) => k + '=' + e)
-    //     .join('&'),
-    //   {
-    //     method: 'POST'
-    //   }
-    // )
     const tokenJSON = await tokenResp.json();
 
     console.log('==== tokenJSON', tokenJSON);
@@ -269,6 +241,5 @@ if (search.code) {
     .reduce((x, o) => (Object.entries(o)), 0)
     .map(([k, e]) => k + '=' + e)
     .join('&');
-  alert(link);
   location.href = link;
 }
